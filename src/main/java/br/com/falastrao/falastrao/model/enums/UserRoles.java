@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.models.enums;
+package br.com.falastrao.falastrao.model.enums;
 
 public enum UserRoles {
     USER,

@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.models;
+package br.com.falastrao.falastrao.model;
 
 import jakarta.persistence.*;
 

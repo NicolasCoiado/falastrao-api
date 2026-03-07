@@ -1,6 +1,6 @@
-package br.com.falastrao.falastrao.models;
+package br.com.falastrao.falastrao.model;
 
-import br.com.falastrao.falastrao.models.enums.UserRoles;
+import br.com.falastrao.falastrao.model.enums.UserRoles;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
