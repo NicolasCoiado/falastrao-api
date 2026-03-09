@@ -21,5 +21,9 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  jwt:
+    secret: ${SECRET_JWT}
+    expiration: 3600000
+    issuer: Falastrao-API
 server:
   port: 8080
