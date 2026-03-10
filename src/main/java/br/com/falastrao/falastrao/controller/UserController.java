@@ -3,6 +3,7 @@ package br.com.falastrao.falastrao.controller;
 import br.com.falastrao.falastrao.dto.request.UserRequest;
 import br.com.falastrao.falastrao.dto.response.UserResponse;
 import br.com.falastrao.falastrao.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> create (@RequestBody UserRequest user) {
+    public ResponseEntity<Map<String, Object>> create (@Valid @RequestBody UserRequest user) {
         UserResponse response = service.save(user);
 
         Map<String, Object> responseMap = new HashMap<>();
