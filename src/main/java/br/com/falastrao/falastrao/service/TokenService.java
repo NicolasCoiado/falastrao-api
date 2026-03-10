@@ -16,13 +16,13 @@ import java.util.Optional;
 @Component
 public class TokenService {
 
-    @Value("${jwt.secret}")
+    @Value("${spring.jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${spring.jwt.expiration}")
     private long expirationTime;
 
-    @Value("${jwt.issuer:Falastrao-API}")
+    @Value("${spring.jwt.issuer:Falastrao-API}")
     private String issuer;
 
     public String generateToken(User user) {
