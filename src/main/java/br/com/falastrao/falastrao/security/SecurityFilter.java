@@ -1,6 +1,5 @@
 package br.com.falastrao.falastrao.security;
 
-import br.com.falastrao.falastrao.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

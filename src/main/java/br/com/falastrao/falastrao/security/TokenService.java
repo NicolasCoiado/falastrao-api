@@ -1,8 +1,7 @@
-package br.com.falastrao.falastrao.service;
+package br.com.falastrao.falastrao.security;
 
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.UserRoles;
-import br.com.falastrao.falastrao.security.JWTUserData;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;

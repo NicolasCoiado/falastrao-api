@@ -1,6 +1,5 @@
-package br.com.falastrao.falastrao.configuration;
+package br.com.falastrao.falastrao.security;
 
-import br.com.falastrao.falastrao.security.SecurityFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
