@@ -15,19 +15,22 @@ public class UserService {
     private final UserRepository repository;
     private final UserMapper mapper;
     private final PasswordEncoder encoder;
+    private final EmailVerificationService verificationService;
 
-    public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder encoder) {
+    public UserService(UserRepository repository, UserMapper mapper, PasswordEncoder encoder, EmailVerificationService verificationService) {
         this.repository = repository;
         this.mapper = mapper;
         this.encoder = encoder;
+        this.verificationService = verificationService;
     }
 
     @Transactional
     public UserResponse save(UserRequest userRequest) {
-        // TODO: Implementar envio de e-mail.
         User user = mapper.toEntity(userRequest);
         user.setPassword(encoder.encode(user.getPassword()));
-        return mapper.toResponse(repository.save(user));
+        User savedUser = repository.save(user);
+        verificationService.createAndSendToken(savedUser);
+        return mapper.toResponse(savedUser);
     }
 
 }

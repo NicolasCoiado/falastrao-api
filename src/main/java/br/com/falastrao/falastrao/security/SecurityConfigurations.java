@@ -36,6 +36,8 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
 
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/resend-verification").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/verify").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
 
                         .requestMatchers("/admin/**")
