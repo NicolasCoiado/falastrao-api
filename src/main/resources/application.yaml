@@ -25,5 +25,21 @@ spring:
     secret: ${SECRET_JWT}
     expiration: 3600000
     issuer: Falastrao-API
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  base-url: ${BASE_URL:http://localhost:8080}
+
 server:
   port: 8080
