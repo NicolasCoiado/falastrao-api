@@ -2,12 +2,12 @@ package br.com.falastrao.falastrao.dto.response;
 
 import java.util.Set;
 
-public record ReviewResponse (
+public record ReviewResponse(
     Long id,
-    UserResponse user,
+    ReviewAuthorResponse author,
     String title,
     String thumbnailUrl,
     String content,
     String publishedAt,
-    Set<TopicResponse> topics
+    Set<String> topics
 ) {}
