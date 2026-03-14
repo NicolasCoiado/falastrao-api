@@ -1,5 +1,7 @@
-package br.com.falastrao.falastrao.security;
+package br.com.falastrao.falastrao.security.filter;
 
+import br.com.falastrao.falastrao.security.jwt.JwtUserData;
+import br.com.falastrao.falastrao.security.jwt.JwtTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,12 +17,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final TokenService tokenService;
+    private final JwtTokenService jwtTokenService;
 
-    public SecurityFilter(TokenService tokenService) {
-        this.tokenService = tokenService;
+    public JwtAuthenticationFilter(JwtTokenService jwtTokenService) {
+        this.jwtTokenService = jwtTokenService;
     }
 
     @Override
@@ -34,11 +36,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            Optional<JWTUserData> jwtUserDataOpt = tokenService.verifyToken(token);
+            Optional<JwtUserData> jwtUserDataOpt = jwtTokenService.verifyToken(token);
 
             if (jwtUserDataOpt.isPresent()) {
 
-                JWTUserData jwtUserData = jwtUserDataOpt.get();
+                JwtUserData jwtUserData = jwtUserDataOpt.get();
 
                 List<SimpleGrantedAuthority> authorities =
                         List.of(new SimpleGrantedAuthority("ROLE_" + jwtUserData.role().name()));

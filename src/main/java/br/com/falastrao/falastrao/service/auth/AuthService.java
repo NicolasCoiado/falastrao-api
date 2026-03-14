@@ -1,25 +1,24 @@
-package br.com.falastrao.falastrao.service;
+package br.com.falastrao.falastrao.service.auth;
 
 import br.com.falastrao.falastrao.dto.request.LoginRequest;
 import br.com.falastrao.falastrao.dto.response.LoginResponse;
 import br.com.falastrao.falastrao.model.User;
-import br.com.falastrao.falastrao.security.TokenService;
+import br.com.falastrao.falastrao.security.jwt.JwtTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final TokenService tokenService;
+    private final JwtTokenService jwtTokenService;
 
     public AuthService(AuthenticationManager authenticationManager,
-                       TokenService tokenService) {
+                       JwtTokenService jwtTokenService) {
         this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
+        this.jwtTokenService = jwtTokenService;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -35,7 +34,7 @@ public class AuthService {
 
         User user = (User) authentication.getPrincipal();
 
-        String token = tokenService.generateToken(user);
+        String token = jwtTokenService.generateToken(user);
 
         return new LoginResponse(token);
     }

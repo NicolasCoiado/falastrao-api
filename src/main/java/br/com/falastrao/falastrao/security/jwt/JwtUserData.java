@@ -1,10 +1,10 @@
-package br.com.falastrao.falastrao.security;
+package br.com.falastrao.falastrao.security.jwt;
 
 import br.com.falastrao.falastrao.model.enums.UserRoles;
 import lombok.Builder;
 
 @Builder
-public record JWTUserData(
+public record JwtUserData(
         Long userId,
         String email,
         UserRoles role

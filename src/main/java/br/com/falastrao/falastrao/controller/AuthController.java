@@ -2,8 +2,8 @@ package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.LoginRequest;
 import br.com.falastrao.falastrao.dto.request.ResendVerificationRequest;
-import br.com.falastrao.falastrao.service.AuthService;
-import br.com.falastrao.falastrao.service.EmailVerificationService;
+import br.com.falastrao.falastrao.service.auth.AuthService;
+import br.com.falastrao.falastrao.service.email.EmailVerificationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

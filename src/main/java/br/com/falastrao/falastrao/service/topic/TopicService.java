@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.service;
+package br.com.falastrao.falastrao.service.topic;
 
 import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.repository.TopicRepository;
@@ -67,4 +67,7 @@ public class TopicService {
                 .trim()
                 .toLowerCase();
     }
+
+
+
 }

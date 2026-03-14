@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.service;
+package br.com.falastrao.falastrao.service.email;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

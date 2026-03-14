@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.security;
+package br.com.falastrao.falastrao.security.jwt;
 
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.UserRoles;
@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Component
-public class TokenService {
+public class JwtTokenService {
 
     @Value("${spring.jwt.secret}")
     private String secret;
@@ -38,7 +38,7 @@ public class TokenService {
                 .sign(algorithm);
     }
 
-    public Optional<JWTUserData> verifyToken(String token){
+    public Optional<JwtUserData> verifyToken(String token){
 
         try {
 
@@ -50,7 +50,7 @@ public class TokenService {
                     .verify(token);
 
             return Optional.of(
-                    JWTUserData.builder()
+                    JwtUserData.builder()
                             .userId(jwt.getClaim("userId").asLong())
                             .email(jwt.getSubject())
                             .role(UserRoles.valueOf(jwt.getClaim("role").asString()))

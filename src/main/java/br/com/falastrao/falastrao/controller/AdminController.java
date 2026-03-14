@@ -1,6 +1,6 @@
 package br.com.falastrao.falastrao.controller;
 
-import br.com.falastrao.falastrao.service.AdminService;
+import br.com.falastrao.falastrao.service.user.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;

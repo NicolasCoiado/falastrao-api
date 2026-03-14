@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.service;
+package br.com.falastrao.falastrao.service.user;
 
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.UserRoles;

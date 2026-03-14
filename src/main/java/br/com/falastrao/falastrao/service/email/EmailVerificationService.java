@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.service;
+package br.com.falastrao.falastrao.service.email;
 
 import br.com.falastrao.falastrao.model.EmailVerificationToken;
 import br.com.falastrao.falastrao.model.User;
