@@ -2,7 +2,7 @@ package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.UserRequest;
 import br.com.falastrao.falastrao.dto.response.UserResponse;
-import br.com.falastrao.falastrao.service.UserService;
+import br.com.falastrao.falastrao.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
