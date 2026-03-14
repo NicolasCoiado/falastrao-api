@@ -1,13 +1,16 @@
 package br.com.falastrao.falastrao.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.Instant;
 
 @Entity
 @Table(name = "email_verification_tokens")
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EmailVerificationToken {
 
     @Id

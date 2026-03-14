@@ -1,6 +1,7 @@
 package br.com.falastrao.falastrao.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
@@ -8,6 +9,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "reviews")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
