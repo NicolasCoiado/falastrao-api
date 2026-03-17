@@ -28,7 +28,7 @@ public class ReviewController {
         ReviewResponse reviewResponse = service.createReview(user, reviewRequest);
 
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("message", "User successfully created!");
+        responseMap.put("message", "Review successfully created!");
         responseMap.put("user", reviewResponse);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
