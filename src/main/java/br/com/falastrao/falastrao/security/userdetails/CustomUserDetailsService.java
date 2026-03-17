@@ -1,4 +1,4 @@
-package br.com.falastrao.falastrao.security.userDetails;
+package br.com.falastrao.falastrao.security.userdetails;
 
 import br.com.falastrao.falastrao.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +14,6 @@ public class CustomUserDetailsService implements org.springframework.security.co
         this.repository = repository;
     }
 
-    @Override
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
