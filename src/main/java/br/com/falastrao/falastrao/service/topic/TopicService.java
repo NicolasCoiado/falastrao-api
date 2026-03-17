@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,11 +64,17 @@ public class TopicService {
         String normalized = Normalizer.normalize(subject, Normalizer.Form.NFD);
 
         return normalized
-                .replaceAll("\\p{M}", "") // remove acentos
+                .replaceAll("\\p{M}", "")
                 .trim()
                 .toLowerCase();
     }
 
-
+    public List<String> searchTopics(String prefix) {
+        if (prefix == null || prefix.isBlank()) return List.of();
+        return repository.findBySubjectStartingWith(prefix)
+                .stream()
+                .map(Topic::getSubject)
+                .toList();
+    }
 
 }
