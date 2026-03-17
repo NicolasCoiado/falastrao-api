@@ -14,35 +14,53 @@ public class AdminService {
         this.userRepository = userRepository;
     }
 
-    public void lockAccount(Long userId) {
+    public boolean lockAccount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // TODO: Change to a custom exception
+
+        if (!user.isAccountNonLocked()) return false;
+
         user.setAccountNonLocked(false);
         userRepository.save(user);
+        return true;
     }
 
-    public void unlockAccount(Long userId) {
+    public boolean unlockAccount(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // TODO: Change to a custom exception
+
+        if (user.isAccountNonLocked()) return false;
+
         user.setAccountNonLocked(true);
         userRepository.save(user);
+        return true;
     }
 
-    public void promoteUser (Long userId) {
+    public boolean promoteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // TODO: Change to a custom exception
+
+        if (user.getRole() == UserRoles.ADMIN) return false;
+
         user.setRole(UserRoles.ADMIN);
         userRepository.save(user);
+        return true;
     }
 
-    public void demoteUser (Long userId) {
+    public boolean demoteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         // TODO: Change to a custom exception
+
+        if (user.getRole() == UserRoles.USER) return false;
+
         user.setRole(UserRoles.USER);
         userRepository.save(user);
+        return true;
     }
+
+    // TODO: Soft delete review
 }

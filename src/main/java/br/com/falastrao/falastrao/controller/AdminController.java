@@ -2,10 +2,7 @@ package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.service.user.AdminService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -20,27 +17,31 @@ public class AdminController {
      }
 
     @PutMapping("/lock-account")
-    public ResponseEntity<Map<String, Object>> lockAccount (@RequestBody Long userId) {
-        service.lockAccount(userId);
-        return ResponseEntity.ok(Map.of("message", "Account locked successfully"));
+    public ResponseEntity<Map<String, Object>> lockAccount(@RequestBody Long userId) {
+        boolean changed = service.lockAccount(userId);
+        String message = changed ? "Account locked successfully" : "Account was already locked";
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     @PutMapping("/unlock-account")
-    public ResponseEntity<Map<String, Object>> unlockAccount (@RequestBody Long userId) {
-        service.unlockAccount(userId);
-        return ResponseEntity.ok(Map.of("message", "Account unlocked successfully"));
+    public ResponseEntity<Map<String, Object>> unlockAccount(@RequestBody Long userId) {
+        boolean changed = service.unlockAccount(userId);
+        String message = changed ? "Account unlocked successfully" : "Account was already unlocked";
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     @PutMapping("/promote-user")
-    public ResponseEntity<Map<String, Object>> promoteUser (@RequestBody Long userId) {
-        service.promoteUser(userId );
-        return ResponseEntity.ok(Map.of("message", "User promoted to admin successfully"));
+    public ResponseEntity<Map<String, Object>> promoteUser(@RequestBody Long userId) {
+        boolean changed = service.promoteUser(userId);
+        String message = changed ? "User promoted to admin successfully" : "User is already an admin";
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     @PutMapping("/demote-user")
-    public ResponseEntity<Map<String, Object>> demoteUser (@RequestBody Long userId) {
-        service.demoteUser(userId);
-        return ResponseEntity.ok(Map.of("message", "User demoted to user successfully"));
+    public ResponseEntity<Map<String, Object>> demoteUser(@RequestBody Long userId) {
+        boolean changed = service.demoteUser(userId);
+        String message = changed ? "User demoted successfully" : "User is already a regular user";
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
 }
