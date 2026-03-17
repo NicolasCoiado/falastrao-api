@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.OffsetDateTime;
 import java.util.Base64;
 
 @Service
@@ -34,8 +33,8 @@ public class EmailVerificationService {
         EmailVerificationToken verificationToken = new EmailVerificationToken();
         verificationToken.setToken(generateToken());
         verificationToken.setUser(user);
-        verificationToken.setCreatedAt(Instant.now());
-        verificationToken.setExpiresAt(Instant.now().plus(24, ChronoUnit.HOURS));
+        verificationToken.setCreatedAt(OffsetDateTime.now());
+        verificationToken.setExpiresAt(OffsetDateTime.now().plusHours(24));
 
         tokenRepository.save(verificationToken);
 
@@ -50,7 +49,7 @@ public class EmailVerificationService {
                         .orElseThrow(() ->
                                 new RuntimeException("Invalid token"));
 
-        if (verificationToken.getExpiresAt().isBefore(Instant.now())) {
+        if (verificationToken.getExpiresAt().isBefore(OffsetDateTime.now())) {
             throw new RuntimeException("Token expired");
         }
 

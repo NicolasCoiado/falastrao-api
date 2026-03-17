@@ -3,7 +3,7 @@ package br.com.falastrao.falastrao.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "email_verification_tokens")
@@ -25,8 +25,8 @@ public class EmailVerificationToken {
     private User user;
 
     @Column(nullable = false)
-    private Instant expiresAt;
+    private OffsetDateTime expiresAt;
 
     @Column(nullable = false)
-    private Instant createdAt;
+    private OffsetDateTime createdAt;
 }
