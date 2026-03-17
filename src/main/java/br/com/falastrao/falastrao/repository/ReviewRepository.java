@@ -4,8 +4,10 @@ import br.com.falastrao.falastrao.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Review findByTitle(String title);
-    Review findByTopicsSubject(String subject);
+    List<Review> findByTitle(String title);
+    List<Review> findByTopicsSubject(String subject);
 }
