@@ -29,6 +29,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(rateLimitInterceptor)
-                .addPathPatterns("/topics/search", "/topics/ranked");
+                .addPathPatterns("/topics/search", "/topics/ranked", "/topics/suggest");
     }
 }
