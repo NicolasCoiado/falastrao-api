@@ -3,9 +3,12 @@ package br.com.falastrao.falastrao.service.topic;
 import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.repository.TopicRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.text.Normalizer;
 import java.util.HashSet;
 import java.util.List;
@@ -72,6 +75,15 @@ public class TopicService {
     public List<String> searchTopics(String prefix) {
         if (prefix == null || prefix.isBlank()) return List.of();
         return repository.findBySubjectStartingWith(prefix)
+                .stream()
+                .map(Topic::getSubject)
+                .toList();
+    }
+
+    @Cacheable(value = "rankedTopics", key = "#limit")
+    public List<String> getRankedTopics(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return repository.findTopicsByUsage(pageable)
                 .stream()
                 .map(Topic::getSubject)
                 .toList();

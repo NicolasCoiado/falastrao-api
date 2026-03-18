@@ -20,6 +20,11 @@ public class TopicController {
         this.service = service;
     }
 
+    @GetMapping("/ranked")
+    public ResponseEntity<List<String>> ranked (@RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(service.getRankedTopics(limit));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<String>> search (
             @RequestParam
@@ -27,5 +32,6 @@ public class TopicController {
             String prefix) {
         return ResponseEntity.ok(service.searchTopics(prefix));
     }
+
 
 }

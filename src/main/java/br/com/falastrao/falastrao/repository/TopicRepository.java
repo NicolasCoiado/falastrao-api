@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,6 +15,11 @@ import java.util.Set;
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Optional<Topic> findBySubject(String subject);
     Set<Topic> findBySubjectIn(Set<String> subjects);
+
     @Query("SELECT t FROM Topic t WHERE LOWER(t.subject) LIKE LOWER(CONCAT(:prefix, '%'))")
     List<Topic> findBySubjectStartingWith(@Param("prefix") String prefix);
+
+    @Query("SELECT t FROM Topic t LEFT JOIN t.reviews r GROUP BY t ORDER BY COUNT(r) DESC")
+    List<Topic> findTopicsByUsage(Pageable pageable);
+
 }

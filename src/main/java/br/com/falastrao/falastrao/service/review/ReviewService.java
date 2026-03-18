@@ -8,6 +8,7 @@ import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.repository.ReviewRepository;
 import br.com.falastrao.falastrao.service.topic.TopicService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -29,6 +30,7 @@ public class ReviewService {
         this.reviewMapper = reviewMapper;
     }
 
+    @CacheEvict(value = "rankedTopics", allEntries = true)
     public ReviewResponse createReview(User user, ReviewRequest reviewRequest) {
 
         Review review = reviewMapper.toEntity(reviewRequest);
