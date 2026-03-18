@@ -1,6 +1,7 @@
 package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.ReviewRequest;
+import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.security.annotation.CurrentUser;
@@ -33,4 +34,12 @@ public class ReviewController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
     }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<ReviewResponse>> getReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(service.getReviews(page, size));
+    }
+
 }

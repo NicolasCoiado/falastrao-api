@@ -1,6 +1,7 @@
 package br.com.falastrao.falastrao.service.review;
 
 import br.com.falastrao.falastrao.dto.request.ReviewRequest;
+import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
 import br.com.falastrao.falastrao.mapper.ReviewMapper;
 import br.com.falastrao.falastrao.model.Review;
@@ -9,6 +10,9 @@ import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.repository.ReviewRepository;
 import br.com.falastrao.falastrao.service.topic.TopicService;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -46,4 +50,12 @@ public class ReviewService {
 
         return reviewMapper.toResponse(review);
     }
+
+    public PageResponse<ReviewResponse> getReviews(int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+        Page<ReviewResponse> result = reviewRepository.findAll(pageable)
+                .map(reviewMapper::toResponse);
+        return PageResponse.from(result);
+    }
+
 }
