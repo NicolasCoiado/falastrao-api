@@ -1,12 +1,12 @@
 package br.com.falastrao.falastrao.controller;
 
+import br.com.falastrao.falastrao.dto.request.TopicSuggestionRequest;
 import br.com.falastrao.falastrao.service.topic.TopicService;
+import br.com.falastrao.falastrao.service.topic.TopicSuggestionService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,15 +14,18 @@ import java.util.List;
 @RequestMapping("/topics")
 public class TopicController {
 
-    private final TopicService service;
+    private final TopicService topicService;
+    private final TopicSuggestionService suggestionService;
 
-    public TopicController(TopicService service) {
-        this.service = service;
+
+    public TopicController(TopicService topicService, TopicSuggestionService suggestionService) {
+        this.topicService = topicService;
+        this.suggestionService = suggestionService;
     }
 
     @GetMapping("/ranked")
     public ResponseEntity<List<String>> ranked (@RequestParam(defaultValue = "10") int limit) {
-        return ResponseEntity.ok(service.getRankedTopics(limit));
+        return ResponseEntity.ok(topicService.getRankedTopics(limit));
     }
 
     @GetMapping("/search")
@@ -30,8 +33,11 @@ public class TopicController {
             @RequestParam
             @Size(min = 2, message = "Prefix must be at least 2 characters")
             String prefix) {
-        return ResponseEntity.ok(service.searchTopics(prefix));
+        return ResponseEntity.ok(topicService.searchTopics(prefix));
     }
 
-
+    @PostMapping("/suggest")
+    public ResponseEntity<List<String>> suggest(@Valid @RequestBody TopicSuggestionRequest request) {
+        return ResponseEntity.ok(suggestionService.suggestTopics(request.title(), request.content()));
+    }
 }
