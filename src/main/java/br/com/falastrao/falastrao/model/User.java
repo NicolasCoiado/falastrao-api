@@ -61,6 +61,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserRoles role = UserRoles.USER;
 
+    @Column(name = "last_login")
+    private OffsetDateTime lastLogin;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
