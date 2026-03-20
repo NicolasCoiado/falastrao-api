@@ -3,6 +3,7 @@ package br.com.falastrao.falastrao.service.review;
 import br.com.falastrao.falastrao.dto.request.ReviewRequest;
 import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
+import br.com.falastrao.falastrao.exception.ReviewNotFoundException;
 import br.com.falastrao.falastrao.mapper.ReviewMapper;
 import br.com.falastrao.falastrao.model.Review;
 import br.com.falastrao.falastrao.model.Topic;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class ReviewService {
@@ -56,6 +58,12 @@ public class ReviewService {
         Page<ReviewResponse> result = reviewRepository.findAll(pageable)
                 .map(reviewMapper::toResponse);
         return PageResponse.from(result);
+    }
+
+    public ReviewResponse getReviewByExternalId(UUID externalId) {
+        Review review = reviewRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
+        return reviewMapper.toResponse(review);
     }
 
 }

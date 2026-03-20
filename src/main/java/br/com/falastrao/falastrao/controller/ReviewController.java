@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/reviews")
@@ -40,6 +41,11 @@ public class ReviewController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(service.getReviews(page, size));
+    }
+
+    @GetMapping("/{externalId}")
+    public ResponseEntity<ReviewResponse> getReview(@PathVariable UUID externalId) {
+        return ResponseEntity.ok(service.getReviewByExternalId(externalId));
     }
 
 }

@@ -17,24 +17,23 @@ import java.util.stream.Collectors;
 public interface ReviewMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "externalId", ignore = true) // gerado pelo @PrePersist
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "publishedAt", ignore = true)
     @Mapping(target = "topics", ignore = true)
     Review toEntity(ReviewRequest request);
 
-
+    @Mapping(target = "externalId", source = "externalId")
     @Mapping(target = "author", source = "user", qualifiedByName = "mapAuthor")
     @Mapping(target = "publishedAt", source = "publishedAt", qualifiedByName = "mapDate")
     @Mapping(target = "topics", source = "topics", qualifiedByName = "mapTopics")
     ReviewResponse toResponse(Review review);
 
-
     @Named("mapAuthor")
     default ReviewAuthorResponse mapAuthor(User user) {
         if (user == null) return null;
-
         return new ReviewAuthorResponse(
-                user.getId(),
+                user.getExternalId(),
                 user.getUsername(),
                 mapMemberSince(user.getCreatedAt())
         );
@@ -55,7 +54,6 @@ public interface ReviewMapper {
     @Named("mapTopics")
     default Set<String> mapTopics(Set<Topic> topics) {
         if (topics == null) return null;
-
         return topics.stream()
                 .map(Topic::getSubject)
                 .collect(Collectors.toSet());

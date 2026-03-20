@@ -12,5 +12,7 @@ public interface UserMapper {
     @Mapping(target = "email", source = "email")
     @Mapping(target = "password", source = "password")
     User toEntity(UserRequest request);
+
+    @Mapping(target = "externalId", source = "externalId")
     UserResponse toResponse(User user);
 }

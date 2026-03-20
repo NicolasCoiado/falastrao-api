@@ -1,7 +1,9 @@
 package br.com.falastrao.falastrao.dto.response;
 
+import java.util.UUID;
+
 public record ReviewAuthorResponse(
-        Long id,
+        UUID externalId,
         String username,
         String memberSince
 ) {}

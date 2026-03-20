@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "reviews")
@@ -17,6 +18,16 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "external_id", unique = true, nullable = false, updatable = false)
+    private UUID externalId;
+
+    @PrePersist
+    private void generateExternalId() {
+        if (this.externalId == null) {
+            this.externalId = UUID.randomUUID();
+        }
+    }
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

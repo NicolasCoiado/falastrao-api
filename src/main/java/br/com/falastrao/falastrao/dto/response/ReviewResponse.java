@@ -1,13 +1,14 @@
 package br.com.falastrao.falastrao.dto.response;
 
 import java.util.Set;
+import java.util.UUID;
 
 public record ReviewResponse(
-    Long id,
-    ReviewAuthorResponse author,
-    String title,
-    String thumbnailUrl,
-    String content,
-    String publishedAt,
-    Set<String> topics
+        UUID externalId,
+        ReviewAuthorResponse author,
+        String title,
+        String thumbnailUrl,
+        String content,
+        String publishedAt,
+        Set<String> topics
 ) {}
