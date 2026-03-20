@@ -10,5 +10,6 @@ public record UserResponse(
         OffsetDateTime createdAt,
         boolean accountVerified,
         boolean accountNonLocked,
-        String role
+        String role,
+        String profilePictureUrl
 ) {}

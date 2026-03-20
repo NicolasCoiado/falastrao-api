@@ -56,4 +56,10 @@ public class UserService {
         return mapper.toResponse(savedUser);
     }
 
+    public UserResponse updateProfilePicture(User user, String profilePictureUrl) {
+        user.setProfilePictureUrl(profilePictureUrl);
+        User savedUser = repository.save(user);
+        return mapper.toResponse(savedUser);
+    }
+
 }

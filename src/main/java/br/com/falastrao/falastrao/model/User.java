@@ -64,6 +64,9 @@ public class User implements UserDetails {
     @Column(name = "last_login")
     private OffsetDateTime lastLogin;
 
+    @Column(name = "profile_picture_url", length = 500)
+    private String profilePictureUrl;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

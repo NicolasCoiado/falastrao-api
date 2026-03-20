@@ -2,14 +2,14 @@ package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.UserRequest;
 import br.com.falastrao.falastrao.dto.response.UserResponse;
+import br.com.falastrao.falastrao.model.User;
+import br.com.falastrao.falastrao.security.annotation.CurrentUser;
 import br.com.falastrao.falastrao.service.user.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,4 +34,18 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
     }
+
+    @PatchMapping("/profile-picture")
+    public ResponseEntity<Map<String, Object>> updateProfilePicture(
+            @CurrentUser User user,
+            @RequestBody @NotBlank String profilePictureUrl) {
+
+        UserResponse response = service.updateProfilePicture(user, profilePictureUrl);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Profile picture updated successfully",
+                "user", response
+        ));
+    }
+
 }
