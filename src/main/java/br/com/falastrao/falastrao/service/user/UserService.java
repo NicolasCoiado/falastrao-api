@@ -48,10 +48,6 @@ public class UserService {
         user.setPassword(encoder.encode(user.getPassword()));
         User savedUser = repository.save(user);
 
-        // TODO: Handle username size
-        // TODO: Handle email size
-        // TODO: Handle password size
-
         verificationService.createAndSendToken(savedUser);
 
         return mapper.toResponse(savedUser);

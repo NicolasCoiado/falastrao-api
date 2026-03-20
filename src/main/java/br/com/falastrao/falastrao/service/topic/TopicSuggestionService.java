@@ -32,7 +32,6 @@ public class TopicSuggestionService {
                 .collect(Collectors.toSet());
 
         String prompt = buildPrompt(title, content, existingTopics);
-        System.out.println(prompt);
 
         return geminiClient.suggest(prompt);
     }
