@@ -30,7 +30,7 @@ public class ReviewController {
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("message", "Review successfully created!");
-        responseMap.put("user", reviewResponse);
+        responseMap.put("Review", reviewResponse);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
     }
