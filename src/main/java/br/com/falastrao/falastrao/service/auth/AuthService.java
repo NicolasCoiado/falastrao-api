@@ -2,9 +2,11 @@ package br.com.falastrao.falastrao.service.auth;
 
 import br.com.falastrao.falastrao.dto.request.LoginRequest;
 import br.com.falastrao.falastrao.dto.response.LoginResponse;
+import br.com.falastrao.falastrao.exception.InvalidCredentialsException;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.security.jwt.JwtTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -22,20 +24,22 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
+        try {
+            UsernamePasswordAuthenticationToken usernamePassword =
+                    new UsernamePasswordAuthenticationToken(
+                            request.email(),
+                            request.password()
+                    );
 
-        UsernamePasswordAuthenticationToken usernamePassword =
-                new UsernamePasswordAuthenticationToken(
-                        request.email(),
-                        request.password()
-                );
+            Authentication authentication =
+                    authenticationManager.authenticate(usernamePassword);
 
-        Authentication authentication =
-                authenticationManager.authenticate(usernamePassword);
+            User user = (User) authentication.getPrincipal();
+            String token = jwtTokenService.generateToken(user);
+            return new LoginResponse(token);
 
-        User user = (User) authentication.getPrincipal();
-
-        String token = jwtTokenService.generateToken(user);
-
-        return new LoginResponse(token);
+        } catch (BadCredentialsException ex) {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
     }
 }

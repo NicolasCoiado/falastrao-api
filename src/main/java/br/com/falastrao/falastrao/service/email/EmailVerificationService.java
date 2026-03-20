@@ -1,5 +1,9 @@
 package br.com.falastrao.falastrao.service.email;
 
+import br.com.falastrao.falastrao.exception.AccountNotVerifiedException;
+import br.com.falastrao.falastrao.exception.ExpiredTokenException;
+import br.com.falastrao.falastrao.exception.InvalidTokenException;
+import br.com.falastrao.falastrao.exception.UserNotFoundException;
 import br.com.falastrao.falastrao.model.EmailVerificationToken;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.repository.EmailVerificationTokenRepository;
@@ -44,13 +48,11 @@ public class EmailVerificationService {
     @Transactional
     public void verifyToken(String token) {
 
-        EmailVerificationToken verificationToken =
-                tokenRepository.findByToken(token)
-                        .orElseThrow(() ->
-                                new RuntimeException("Invalid token"));
+        EmailVerificationToken verificationToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new InvalidTokenException("Invalid token"));
 
         if (verificationToken.getExpiresAt().isBefore(OffsetDateTime.now())) {
-            throw new RuntimeException("Token expired");
+            throw new ExpiredTokenException("Token has expired");
         }
 
         User user = verificationToken.getUser();
@@ -60,17 +62,16 @@ public class EmailVerificationService {
         userRepository.save(user);
 
         tokenRepository.deleteByUserId(user.getId());
+
     }
 
     @Transactional
     public void resendToken(String email) {
-
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (user.isAccountVerified()) {
-            throw new RuntimeException("Account already verified");
+            throw new AccountNotVerifiedException("Account is already verified");
         }
 
         createAndSendToken(user);

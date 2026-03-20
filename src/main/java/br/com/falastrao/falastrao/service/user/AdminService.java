@@ -1,5 +1,6 @@
 package br.com.falastrao.falastrao.service.user;
 
+import br.com.falastrao.falastrao.exception.UserNotFoundException;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.UserRoles;
 import br.com.falastrao.falastrao.repository.UserRepository;
@@ -16,8 +17,7 @@ public class AdminService {
 
     public boolean lockAccount(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        // TODO: Change to a custom exception
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!user.isAccountNonLocked()) return false;
 
@@ -28,8 +28,7 @@ public class AdminService {
 
     public boolean unlockAccount(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        // TODO: Change to a custom exception
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (user.isAccountNonLocked()) return false;
 
@@ -40,8 +39,7 @@ public class AdminService {
 
     public boolean promoteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        // TODO: Change to a custom exception
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (user.getRole() == UserRoles.ADMIN) return false;
 
@@ -52,8 +50,7 @@ public class AdminService {
 
     public boolean demoteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        // TODO: Change to a custom exception
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (user.getRole() == UserRoles.USER) return false;
 

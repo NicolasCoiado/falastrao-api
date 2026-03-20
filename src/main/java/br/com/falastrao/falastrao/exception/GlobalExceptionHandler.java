@@ -17,4 +17,33 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ex.getMessage(), 404, OffsetDateTime.now()));
     }
 
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuth(AuthException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(ex.getMessage(), 401, OffsetDateTime.now()));
+    }
+
+    @ExceptionHandler(UserWithoutPermissionException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(UserWithoutPermissionException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(ex.getMessage(), 403, OffsetDateTime.now()));
+    }
+
+    @ExceptionHandler(AccountException.class)
+    public ResponseEntity<ErrorResponse> handleAccount(AccountException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(ex.getMessage(), 403, OffsetDateTime.now()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse("An unexpected error occurred.", 500, OffsetDateTime.now()));
+    }
+
+    @ExceptionHandler(AIServiceException.class)
+    public ResponseEntity<ErrorResponse> handleAIService(AIServiceException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(new ErrorResponse("AI service unavailable.", 502, OffsetDateTime.now()));
+    }
 }

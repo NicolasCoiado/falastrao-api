@@ -1,5 +1,6 @@
 package br.com.falastrao.falastrao.ai;
 
+import br.com.falastrao.falastrao.exception.AIServiceException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.genai.Client;
@@ -46,12 +47,11 @@ public class GeminiTopicSuggestionClient {
         try {
             String cleaned = text.replaceAll("(?s)```json|```", "").trim();
             JsonNode node = objectMapper.readTree(cleaned);
-
             List<String> topics = new ArrayList<>();
             node.forEach(t -> topics.add(t.asText()));
             return topics;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse Gemini response: " + text, e);
+            throw new AIServiceException("Failed to parse Gemini response: " + text, e);
         }
     }
 }

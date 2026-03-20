@@ -2,6 +2,9 @@ package br.com.falastrao.falastrao.service.user;
 
 import br.com.falastrao.falastrao.dto.request.UserRequest;
 import br.com.falastrao.falastrao.dto.response.UserResponse;
+import br.com.falastrao.falastrao.exception.AccountLockedException;
+import br.com.falastrao.falastrao.exception.AccountNotVerifiedException;
+import br.com.falastrao.falastrao.exception.UserNotFoundException;
 import br.com.falastrao.falastrao.mapper.UserMapper;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.repository.UserRepository;
@@ -26,20 +29,20 @@ public class UserService {
     }
 
     public User getActiveVerifiedUserById(Long id) {
-
         User user = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!user.isAccountVerified()) {
-            throw new RuntimeException("User account not verified");
+            throw new AccountNotVerifiedException("Account not verified");
         }
 
         if (!user.isAccountNonLocked()) {
-            throw new RuntimeException("User account locked");
+            throw new AccountLockedException("Account is locked");
         }
 
         return user;
-    } // TODO: Refactor exception handling
+    }
+
 
     @Transactional
     public UserResponse save(UserRequest userRequest) {
