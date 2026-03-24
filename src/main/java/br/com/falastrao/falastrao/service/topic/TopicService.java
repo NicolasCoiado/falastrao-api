@@ -1,6 +1,8 @@
 package br.com.falastrao.falastrao.service.topic;
 
 import br.com.falastrao.falastrao.dto.response.PageResponse;
+import br.com.falastrao.falastrao.exception.TopicAlreadyExistsException;
+import br.com.falastrao.falastrao.exception.TopicNotFoundException;
 import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.repository.TopicRepository;
 import jakarta.transaction.Transactional;
@@ -9,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -97,6 +100,26 @@ public class TopicService {
                 .stream()
                 .map(Topic::getSubject)
                 .toList();
+    }
+
+    public String updateTopic(String oldSubject, String newSubject) {
+        if (oldSubject == null || newSubject == null || oldSubject.isBlank() || newSubject.isBlank()) {
+            throw new IllegalArgumentException("Subjects cannot be null or blank");
+        }
+
+        String normalizedOldSubject = normalize(oldSubject);
+        String normalizedNewSubject = normalize(newSubject);
+
+        Topic existingTopic = repository.findBySubject(normalizedOldSubject)
+                .orElseThrow(() -> new TopicNotFoundException("Topic not found: " + oldSubject));
+
+        if (repository.existsBySubject(normalizedNewSubject)) {
+            throw new TopicAlreadyExistsException("Topic already exists: " + newSubject);
+        }
+
+        existingTopic.setSubject(normalizedNewSubject);
+
+        return repository.save(existingTopic).getSubject();
     }
 
 }

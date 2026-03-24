@@ -60,4 +60,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(message, 400, OffsetDateTime.now()));
     }
+
+    @ExceptionHandler(TopicAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleTopicAlreadyExists(TopicAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ex.getMessage(), 409, OffsetDateTime.now()));
+    }
 }

@@ -22,4 +22,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query("SELECT t FROM Topic t LEFT JOIN t.reviews r GROUP BY t ORDER BY COUNT(r) DESC")
     List<Topic> findTopicsByUsage(Pageable pageable);
 
+    boolean existsBySubject(String subject);
+
 }
