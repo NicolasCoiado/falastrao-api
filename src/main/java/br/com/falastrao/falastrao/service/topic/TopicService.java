@@ -1,11 +1,14 @@
 package br.com.falastrao.falastrao.service.topic;
 
+import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.repository.TopicRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,13 @@ public class TopicService {
 
     public TopicService(TopicRepository repository) {
         this.repository = repository;
+    }
+
+    public PageResponse<String> getTopics (int page, int size){
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("subject").ascending());
+        Page<String> result = repository.findAll(pageable)
+                .map(Topic::getSubject);
+        return PageResponse.from(result);
     }
 
     @Transactional

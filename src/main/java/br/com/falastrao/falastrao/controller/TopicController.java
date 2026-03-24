@@ -1,6 +1,7 @@
 package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.TopicSuggestionRequest;
+import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.service.topic.TopicService;
 import br.com.falastrao.falastrao.service.topic.TopicSuggestionService;
 import jakarta.validation.Valid;
@@ -21,6 +22,13 @@ public class TopicController {
     public TopicController(TopicService topicService, TopicSuggestionService suggestionService) {
         this.topicService = topicService;
         this.suggestionService = suggestionService;
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<String>> listTopics(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(topicService.getTopics(page, size));
     }
 
     @GetMapping("/ranked")
