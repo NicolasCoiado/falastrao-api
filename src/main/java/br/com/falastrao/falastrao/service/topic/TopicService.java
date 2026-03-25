@@ -122,4 +122,11 @@ public class TopicService {
         return repository.save(existingTopic).getSubject();
     }
 
+    public List<String> getUnusedTopics() {
+        return repository.findUnusedTopics()
+                .stream()
+                .map(Topic::getSubject)
+                .toList();
+    }
+
 }

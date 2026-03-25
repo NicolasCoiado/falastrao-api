@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/reset-password").permitAll()
 
                         .requestMatchers(HttpMethod.PATCH, "/topics/update").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/topics/unused").hasRole("ADMIN")
 
                         .requestMatchers("/admin/**")
                         .hasRole("ADMIN")

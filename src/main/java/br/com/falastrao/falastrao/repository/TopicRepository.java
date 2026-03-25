@@ -24,4 +24,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 
     boolean existsBySubject(String subject);
 
+    @Query("SELECT t FROM Topic t WHERE t.reviews IS EMPTY")
+    List<Topic> findUnusedTopics();
+
 }

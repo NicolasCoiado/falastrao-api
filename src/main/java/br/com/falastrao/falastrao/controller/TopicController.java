@@ -47,6 +47,11 @@ public class TopicController {
         return ResponseEntity.ok(topicService.searchTopics(prefix));
     }
 
+    @GetMapping("/unused")
+    public ResponseEntity<List<String>> unused() {
+        return ResponseEntity.ok(topicService.getUnusedTopics());
+    }
+
     @PostMapping("/suggest")
     public ResponseEntity<List<String>> suggest(@Valid @RequestBody TopicSuggestionRequest request) {
         return ResponseEntity.ok(suggestionService.suggestTopics(request.title(), request.content()));
