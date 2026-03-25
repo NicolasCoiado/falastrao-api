@@ -26,6 +26,7 @@ public interface ReviewMapper {
     @Mapping(target = "externalId", source = "externalId")
     @Mapping(target = "author", source = "user", qualifiedByName = "mapAuthor")
     @Mapping(target = "publishedAt", source = "publishedAt", qualifiedByName = "mapDate")
+    @Mapping(target = "updatedAt", source = "updatedAt", qualifiedByName = "mapDate")
     @Mapping(target = "topics", source = "topics", qualifiedByName = "mapTopics")
     ReviewResponse toResponse(Review review);
 

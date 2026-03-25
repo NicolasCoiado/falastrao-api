@@ -10,5 +10,6 @@ public record ReviewResponse(
         String thumbnailUrl,
         String content,
         String publishedAt,
+        String updatedAt,
         Set<String> topics
 ) {}

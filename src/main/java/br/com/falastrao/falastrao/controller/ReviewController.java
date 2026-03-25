@@ -1,11 +1,13 @@
 package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.ReviewRequest;
+import br.com.falastrao.falastrao.dto.request.UpdateReviewRequest;
 import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.security.annotation.CurrentUser;
 import br.com.falastrao.falastrao.service.review.ReviewService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +48,22 @@ public class ReviewController {
     @GetMapping("/{externalId}")
     public ResponseEntity<ReviewResponse> getReview(@PathVariable UUID externalId) {
         return ResponseEntity.ok(service.getReviewByExternalId(externalId));
+    }
+
+    @PutMapping("/{externalId}")
+    public ResponseEntity<ReviewResponse> updateReview(
+            @PathVariable UUID externalId,
+            @CurrentUser User user,
+            @Valid @RequestBody ReviewRequest request) {
+        return ResponseEntity.ok(service.updateReview(externalId, user, request));
+    }
+
+    @PatchMapping("/{externalId}")
+    public ResponseEntity<ReviewResponse> partialUpdateReview(
+            @PathVariable UUID externalId,
+            @CurrentUser User user,
+            @RequestBody UpdateReviewRequest request) {
+        return ResponseEntity.ok(service.partialUpdateReview(externalId, user, request));
     }
 
     @DeleteMapping("/{externalId}")

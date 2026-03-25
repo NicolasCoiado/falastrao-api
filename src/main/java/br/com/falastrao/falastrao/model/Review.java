@@ -46,6 +46,9 @@ public class Review {
     @Column(name = "published_at", nullable = false, updatable = false)
     private OffsetDateTime publishedAt;
 
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt;
+
     @ManyToMany
     @JoinTable(
             name = "review_topics",
