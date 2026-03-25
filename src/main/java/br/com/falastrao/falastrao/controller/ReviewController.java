@@ -48,4 +48,10 @@ public class ReviewController {
         return ResponseEntity.ok(service.getReviewByExternalId(externalId));
     }
 
+    @DeleteMapping("/{externalId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID externalId) {
+        service.deleteReview(externalId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

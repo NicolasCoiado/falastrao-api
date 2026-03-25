@@ -10,6 +10,7 @@ import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.repository.ReviewRepository;
 import br.com.falastrao.falastrao.service.topic.TopicService;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,6 +65,15 @@ public class ReviewService {
         Review review = reviewRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
         return reviewMapper.toResponse(review);
+    }
+
+    @Transactional
+    public void deleteReview(UUID externalId) {
+        Review review = reviewRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
+
+        review.getTopics().clear();
+        reviewRepository.delete(review);
     }
 
 }
