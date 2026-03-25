@@ -146,4 +146,11 @@ public class TopicService {
         return count;
     }
 
+    public void deleteTopicById(Long id) {
+        if (!repository.existsById(id)) {
+            throw new TopicNotFoundException("Topic not found with id: " + id);
+        }
+        repository.deleteById(id);
+    }
+
 }

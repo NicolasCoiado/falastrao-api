@@ -77,6 +77,15 @@ public class TopicController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HashMap<String, String>> deleteById(@PathVariable Long id) {
+        topicService.deleteTopicById(id);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Topic deleted successfully");
+        response.put("id", String.valueOf(id));
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/unused")
     public ResponseEntity<HashMap<String, String>> deleteUnused() {
         int deletedCount = topicService.deleteUnusedTopics();
