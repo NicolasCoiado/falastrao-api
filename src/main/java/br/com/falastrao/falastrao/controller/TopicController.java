@@ -7,13 +7,11 @@ import br.com.falastrao.falastrao.service.topic.TopicService;
 import br.com.falastrao.falastrao.service.topic.TopicSuggestionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/topics")
@@ -76,6 +74,15 @@ public class TopicController {
         HashMap<String, String> response = new HashMap<>();
         response.put("message", "Topic deleted successfully");
         response.put("subject", subject);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/unused")
+    public ResponseEntity<HashMap<String, String>> deleteUnused() {
+        int deletedCount = topicService.deleteUnusedTopics();
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Unused topics deleted successfully");
+        response.put("deletedCount", String.valueOf(deletedCount));
         return ResponseEntity.ok(response);
     }
 

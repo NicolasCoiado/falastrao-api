@@ -139,4 +139,11 @@ public class TopicService {
         repository.delete(topic);
     }
 
+    public int deleteUnusedTopics() {
+        List<Topic> unusedTopics = repository.findUnusedTopics();
+        int count = unusedTopics.size();
+        repository.deleteAll(unusedTopics);
+        return count;
+    }
+
 }
