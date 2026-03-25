@@ -1,6 +1,7 @@
 package br.com.falastrao.falastrao.service.topic;
 
 import br.com.falastrao.falastrao.dto.response.PageResponse;
+import br.com.falastrao.falastrao.dto.response.TrendingTopicResponse;
 import br.com.falastrao.falastrao.exception.TopicAlreadyExistsException;
 import br.com.falastrao.falastrao.exception.TopicNotFoundException;
 import br.com.falastrao.falastrao.model.Topic;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 import java.text.Normalizer;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,6 +128,18 @@ public class TopicService {
         return repository.findUnusedTopics()
                 .stream()
                 .map(Topic::getSubject)
+                .toList();
+    }
+
+    public List<TrendingTopicResponse> getTrendingTopics(OffsetDateTime since) {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        return repository.findTrendingTopics(since, pageable)
+                .stream()
+                .map(row -> new TrendingTopicResponse(
+                        (String) row[0],
+                        (Long) row[1]
+                ))
                 .toList();
     }
 

@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/topics/trending").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/resend-verification").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/verify").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
@@ -45,7 +46,6 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.PATCH, "/topics/update").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/topics/unused").hasRole("ADMIN")
-
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/reviews/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/topics/**").hasRole("ADMIN")

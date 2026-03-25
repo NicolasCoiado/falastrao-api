@@ -3,13 +3,16 @@ package br.com.falastrao.falastrao.controller;
 import br.com.falastrao.falastrao.dto.request.TopicRequest;
 import br.com.falastrao.falastrao.dto.request.TopicSuggestionRequest;
 import br.com.falastrao.falastrao.dto.response.PageResponse;
+import br.com.falastrao.falastrao.dto.response.TrendingTopicResponse;
 import br.com.falastrao.falastrao.service.topic.TopicService;
 import br.com.falastrao.falastrao.service.topic.TopicSuggestionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,6 +52,12 @@ public class TopicController {
     @GetMapping("/unused")
     public ResponseEntity<List<String>> unused() {
         return ResponseEntity.ok(topicService.getUnusedTopics());
+    }
+
+    @GetMapping("/trending")
+    public ResponseEntity<List<TrendingTopicResponse>> trending(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime since) {
+        return ResponseEntity.ok(topicService.getTrendingTopics(since));
     }
 
     @PostMapping("/suggest")
