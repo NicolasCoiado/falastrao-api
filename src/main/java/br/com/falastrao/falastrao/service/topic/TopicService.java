@@ -129,4 +129,14 @@ public class TopicService {
                 .toList();
     }
 
+    @Transactional
+    public void deleteTopic(String subject) {
+        String normalizedSubject = normalize(subject);
+
+        Topic topic = repository.findBySubject(normalizedSubject)
+                .orElseThrow(() -> new TopicNotFoundException("Topic not found: " + subject));
+
+        repository.delete(topic);
+    }
+
 }

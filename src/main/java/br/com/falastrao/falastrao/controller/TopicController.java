@@ -7,6 +7,7 @@ import br.com.falastrao.falastrao.service.topic.TopicService;
 import br.com.falastrao.falastrao.service.topic.TopicSuggestionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,15 @@ public class TopicController {
         response.put("message", "Topic updated successfully");
         response.put("subject", updatedTopic);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{subject}")
+    public ResponseEntity<HashMap<String, String>> delete(@PathVariable String subject) {
+        topicService.deleteTopic(subject);
+        HashMap<String, String> response = new HashMap<>();
+        response.put("message", "Topic deleted successfully");
+        response.put("subject", subject);
         return ResponseEntity.ok(response);
     }
 
