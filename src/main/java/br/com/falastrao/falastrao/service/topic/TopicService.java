@@ -1,23 +1,27 @@
 package br.com.falastrao.falastrao.service.topic;
 
 import br.com.falastrao.falastrao.dto.response.PageResponse;
+import br.com.falastrao.falastrao.dto.response.TopicDetailsResponse;
+import br.com.falastrao.falastrao.dto.response.TopicRecentReviewResponse;
 import br.com.falastrao.falastrao.dto.response.TrendingTopicResponse;
+import br.com.falastrao.falastrao.exception.InvalidRequestException;
 import br.com.falastrao.falastrao.exception.TopicAlreadyExistsException;
 import br.com.falastrao.falastrao.exception.TopicNotFoundException;
 import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.repository.TopicRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 import java.text.Normalizer;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,9 +108,10 @@ public class TopicService {
                 .toList();
     }
 
+    @CacheEvict(value = "topicDetails", allEntries = true)
     public String updateTopic(String oldSubject, String newSubject) {
         if (oldSubject == null || newSubject == null || oldSubject.isBlank() || newSubject.isBlank()) {
-            throw new IllegalArgumentException("Subjects cannot be null or blank");
+            throw new InvalidRequestException("Subjects cannot be null or blank");
         }
 
         String normalizedOldSubject = normalize(oldSubject);
@@ -143,7 +148,69 @@ public class TopicService {
                 .toList();
     }
 
+    @Cacheable(value = "topicDetails", key = "#subject")
+    public TopicDetailsResponse getTopicDetails(String subject) {
+        String normalizedSubject = normalize(subject);
+
+        if (!repository.existsBySubject(normalizedSubject)) {
+            throw new TopicNotFoundException("Topic not found: " + subject);
+        }
+
+        OffsetDateTime oneMonthAgo = OffsetDateTime.now().minusMonths(1);
+        Pageable fiveReviews = PageRequest.of(0, 5);
+
+        Object[] rawStats = repository.findTopicStats(normalizedSubject, oneMonthAgo);
+
+        Object[] stats = (rawStats.length > 0 && rawStats[0] instanceof Object[])
+                ? (Object[]) rawStats[0]
+                : rawStats;
+
+        long totalReviews    = stats[0] != null ? ((Number) stats[0]).longValue() : 0L;
+        long distinctAuthors = stats[1] != null ? ((Number) stats[1]).longValue() : 0L;
+        long reviewsLastMonth = stats[4] != null ? ((Number) stats[4]).longValue() : 0L;
+
+        OffsetDateTime firstUsed = toOffsetDateTime(stats[2]);
+        OffsetDateTime lastUsed  = toOffsetDateTime(stats[3]);
+
+        List<String> relatedTopics = repository.findRelatedTopics(normalizedSubject);
+
+        List<TopicRecentReviewResponse> recentReviews = repository
+                .findRecentReviews(normalizedSubject, fiveReviews)
+                .stream()
+                .map(r -> new TopicRecentReviewResponse(
+                        r.getExternalId(),
+                        r.getTitle(),
+                        r.getUser().getUsername(),
+                        r.getPublishedAt().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                ))
+                .toList();
+
+        return new TopicDetailsResponse(
+                normalizedSubject,
+                totalReviews,
+                distinctAuthors,
+                firstUsed != null ? firstUsed.format(DateTimeFormatter.ISO_LOCAL_DATE) : null,
+                lastUsed  != null ? lastUsed.format(DateTimeFormatter.ISO_LOCAL_DATE)  : null,
+                reviewsLastMonth,
+                relatedTopics,
+                recentReviews
+        );
+    }
+
+    private OffsetDateTime toOffsetDateTime(Object value) {
+        if (value == null) return null;
+        if (value instanceof OffsetDateTime odt) return odt;
+        if (value instanceof java.sql.Timestamp ts) {
+            return ts.toInstant().atOffset(java.time.ZoneOffset.UTC);
+        }
+        if (value instanceof java.time.LocalDateTime ldt) {
+            return ldt.atOffset(java.time.ZoneOffset.UTC);
+        }
+        throw new IllegalArgumentException("Cannot convert to OffsetDateTime: " + value.getClass());
+    }
+
     @Transactional
+    @CacheEvict(value = "topicDetails", allEntries = true)
     public void deleteTopic(String subject) {
         String normalizedSubject = normalize(subject);
 

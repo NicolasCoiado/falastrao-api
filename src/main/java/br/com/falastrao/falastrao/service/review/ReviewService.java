@@ -14,6 +14,7 @@ import br.com.falastrao.falastrao.repository.ReviewRepository;
 import br.com.falastrao.falastrao.service.topic.TopicService;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -40,7 +41,10 @@ public class ReviewService {
         this.reviewMapper = reviewMapper;
     }
 
-    @CacheEvict(value = "rankedTopics", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "rankedTopics", allEntries = true),
+            @CacheEvict(value = "topicDetails", allEntries = true)
+    })
     public ReviewResponse createReview(User user, ReviewRequest reviewRequest) {
 
         Review review = reviewMapper.toEntity(reviewRequest);
@@ -71,6 +75,7 @@ public class ReviewService {
     }
 
     @Transactional
+    @CacheEvict(value = "topicDetails", allEntries = true)
     public ReviewResponse updateReview(UUID externalId, User user, ReviewRequest request) {
         Review review = reviewRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
@@ -91,6 +96,7 @@ public class ReviewService {
     }
 
     @Transactional
+    @CacheEvict(value = "topicDetails", allEntries = true)
     public ReviewResponse partialUpdateReview(UUID externalId, User user, UpdateReviewRequest request) {
         Review review = reviewRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
@@ -122,6 +128,7 @@ public class ReviewService {
     }
 
     @Transactional
+    @CacheEvict(value = "topicDetails", allEntries = true)
     public void deleteReview(UUID externalId) {
         Review review = reviewRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));

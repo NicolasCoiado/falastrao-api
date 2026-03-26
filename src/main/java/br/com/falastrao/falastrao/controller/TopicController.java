@@ -3,6 +3,7 @@ package br.com.falastrao.falastrao.controller;
 import br.com.falastrao.falastrao.dto.request.TopicRequest;
 import br.com.falastrao.falastrao.dto.request.TopicSuggestionRequest;
 import br.com.falastrao.falastrao.dto.response.PageResponse;
+import br.com.falastrao.falastrao.dto.response.TopicDetailsResponse;
 import br.com.falastrao.falastrao.dto.response.TrendingTopicResponse;
 import br.com.falastrao.falastrao.service.topic.TopicService;
 import br.com.falastrao.falastrao.service.topic.TopicSuggestionService;
@@ -84,6 +85,11 @@ public class TopicController {
         response.put("message", "Topic deleted successfully");
         response.put("subject", subject);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<TopicDetailsResponse> details(@RequestParam String subject) {
+        return ResponseEntity.ok(topicService.getTopicDetails(subject));
     }
 
     @DeleteMapping("/delete/{id}")
