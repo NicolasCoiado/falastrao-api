@@ -11,5 +11,6 @@ public record ReviewResponse(
         String content,
         String publishedAt,
         String updatedAt,
+        boolean privateReview,
         Set<String> topics
 ) {}
