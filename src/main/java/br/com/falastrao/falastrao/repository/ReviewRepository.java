@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    List<Review> findByTitle(String title);
-    List<Review> findByTopicsSubject(String subject);
+    Page<Review> findAllByPrivateReviewFalse(Pageable pageable);
+    Optional<Review> findByExternalIdAndPrivateReviewFalse(UUID externalId);
     Optional<Review> findByExternalId(UUID externalId);
 }
