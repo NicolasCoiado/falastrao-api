@@ -1,10 +1,12 @@
 package br.com.falastrao.falastrao.controller;
 
-import br.com.falastrao.falastrao.service.user.AdminService;
+import br.com.falastrao.falastrao.dto.response.ReviewResponse;
+import br.com.falastrao.falastrao.service.admin.AdminService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping ("/admin")
@@ -42,6 +44,11 @@ public class AdminController {
         boolean changed = service.demoteUser(userId);
         String message = changed ? "User demoted successfully" : "User is already a regular user";
         return ResponseEntity.ok(Map.of("message", message));
+    }
+
+    @PatchMapping("/reviews/{externalId}/privacy")
+    public ResponseEntity<ReviewResponse> toggleReviewPrivacy(@PathVariable UUID externalId) {
+        return ResponseEntity.ok(service.toggleReviewPrivacy(externalId));
     }
 
 }

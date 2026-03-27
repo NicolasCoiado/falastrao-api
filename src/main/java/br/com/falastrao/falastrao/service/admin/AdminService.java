@@ -1,18 +1,30 @@
-package br.com.falastrao.falastrao.service.user;
+package br.com.falastrao.falastrao.service.admin;
 
+import br.com.falastrao.falastrao.dto.response.ReviewResponse;
+import br.com.falastrao.falastrao.exception.ReviewNotFoundException;
 import br.com.falastrao.falastrao.exception.UserNotFoundException;
+import br.com.falastrao.falastrao.mapper.ReviewMapper;
+import br.com.falastrao.falastrao.model.Review;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.UserRoles;
+import br.com.falastrao.falastrao.repository.ReviewRepository;
 import br.com.falastrao.falastrao.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
 
-    public AdminService(UserRepository userRepository) {
+    public AdminService(UserRepository userRepository, ReviewRepository reviewRepository, ReviewMapper reviewMapper) {
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
+        this.reviewMapper = reviewMapper;
     }
 
     public boolean lockAccount(Long userId) {
@@ -59,5 +71,13 @@ public class AdminService {
         return true;
     }
 
-    // TODO: Soft delete review
+    @Transactional
+    public ReviewResponse toggleReviewPrivacy(UUID externalId) {
+        Review review = reviewRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
+
+        review.setPrivateReview(!review.isPrivateReview());
+        return reviewMapper.toResponse(reviewRepository.save(review));
+    }
+
 }
