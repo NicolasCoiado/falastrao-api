@@ -66,6 +66,13 @@ public class ReviewController {
         return ResponseEntity.ok(service.partialUpdateReview(externalId, user, request));
     }
 
+    @PatchMapping("/{externalId}/privacy")
+    public ResponseEntity<ReviewResponse> togglePrivacy(
+            @PathVariable UUID externalId,
+            @CurrentUser User user) {
+        return ResponseEntity.ok(service.togglePrivacy(externalId, user));
+    }
+
     @DeleteMapping("/{externalId}")
     public ResponseEntity<Void> delete(@PathVariable UUID externalId) {
         service.deleteReview(externalId);
