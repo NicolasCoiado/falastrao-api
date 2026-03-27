@@ -63,15 +63,28 @@ public class ReviewService {
 
     public PageResponse<ReviewResponse> getReviews(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
-        Page<ReviewResponse> result = reviewRepository.findAll(pageable)
+        Page<ReviewResponse> result = reviewRepository.findAllByPrivateReviewFalse(pageable)
                 .map(reviewMapper::toResponse);
         return PageResponse.from(result);
     }
 
     public ReviewResponse getReviewByExternalId(UUID externalId) {
-        Review review = reviewRepository.findByExternalId(externalId)
+        Review review = reviewRepository.findByExternalIdAndPrivateReviewFalse(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
         return reviewMapper.toResponse(review);
+    }
+
+    @Transactional
+    public ReviewResponse togglePrivacy(UUID externalId, User user) {
+        Review review = reviewRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
+
+        if (!review.getUser().getId().equals(user.getId())) {
+            throw new UserWithoutPermissionException("You are not allowed to change this review's privacy");
+        }
+
+        review.setPrivateReview(!review.isPrivateReview());
+        return reviewMapper.toResponse(reviewRepository.save(review));
     }
 
     @Transactional
