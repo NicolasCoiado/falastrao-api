@@ -42,6 +42,9 @@ public class Review {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
+    private boolean privateReview = false;
+
     @CreationTimestamp
     @Column(name = "published_at", nullable = false, updatable = false)
     private OffsetDateTime publishedAt;
