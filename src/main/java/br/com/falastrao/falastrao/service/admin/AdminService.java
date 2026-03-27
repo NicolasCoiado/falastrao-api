@@ -9,6 +9,7 @@ import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.UserRoles;
 import br.com.falastrao.falastrao.repository.ReviewRepository;
 import br.com.falastrao.falastrao.repository.UserRepository;
+import br.com.falastrao.falastrao.service.notification.NotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,13 @@ public class AdminService {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
+    private final NotificationService notificationService;
 
-    public AdminService(UserRepository userRepository, ReviewRepository reviewRepository, ReviewMapper reviewMapper) {
+    public AdminService(UserRepository userRepository, ReviewRepository reviewRepository, ReviewMapper reviewMapper, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.reviewMapper = reviewMapper;
+        this.notificationService = notificationService;
     }
 
     public boolean lockAccount(Long userId) {
@@ -72,11 +75,23 @@ public class AdminService {
     }
 
     @Transactional
-    public ReviewResponse toggleReviewPrivacy(UUID externalId) {
+    public ReviewResponse toggleReviewPrivacy(UUID externalId, String reason) {
         Review review = reviewRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
 
-        review.setPrivateReview(!review.isPrivateReview());
+        boolean isBeingPrivated = !review.isPrivateReview();
+        review.setPrivateReview(isBeingPrivated);
+
+        if (isBeingPrivated) {
+            String text = """
+                Your review "%s" has been made private by our moderation team.
+                Reason: %s
+                If you believe this was a mistake, please contact support.
+                """.formatted(review.getTitle(), reason);
+
+            notificationService.sendSystemNotification(review.getUser(), text);
+        }
+
         return reviewMapper.toResponse(reviewRepository.save(review));
     }
 

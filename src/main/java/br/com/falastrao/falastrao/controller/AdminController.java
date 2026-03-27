@@ -1,7 +1,9 @@
 package br.com.falastrao.falastrao.controller;
 
+import br.com.falastrao.falastrao.dto.request.PrivacyModerationRequest;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
 import br.com.falastrao.falastrao.service.admin.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +49,10 @@ public class AdminController {
     }
 
     @PatchMapping("/reviews/{externalId}/privacy")
-    public ResponseEntity<ReviewResponse> toggleReviewPrivacy(@PathVariable UUID externalId) {
-        return ResponseEntity.ok(service.toggleReviewPrivacy(externalId));
+    public ResponseEntity<ReviewResponse> toggleReviewPrivacy(
+            @PathVariable UUID externalId,
+            @Valid @RequestBody PrivacyModerationRequest request) {
+        return ResponseEntity.ok(service.toggleReviewPrivacy(externalId, request.reason()));
     }
 
 }
