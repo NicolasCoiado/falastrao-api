@@ -83,13 +83,11 @@ public class AdminService {
         review.setPrivateReview(isBeingPrivated);
 
         if (isBeingPrivated) {
-            String text = """
-                Your review "%s" has been made private by our moderation team.
-                Reason: %s
-                If you believe this was a mistake, please contact support.
-                """.formatted(review.getTitle(), reason);
-
-            notificationService.sendSystemNotification(review.getUser(), text);
+            notificationService.sendSystemNotification(
+                    review.getUser(),
+                    "notification.review.privated",
+                    new Object[]{review.getTitle(), reason}
+            );
         }
 
         return reviewMapper.toResponse(reviewRepository.save(review));

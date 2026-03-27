@@ -7,28 +7,35 @@ import br.com.falastrao.falastrao.model.Notification;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.model.enums.NotificationOrigin;
 import br.com.falastrao.falastrao.repository.NotificationRepository;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final MessageSource messageSource;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    public NotificationService(NotificationRepository notificationRepository,
+                               MessageSource messageSource) {
         this.notificationRepository = notificationRepository;
+        this.messageSource = messageSource;
     }
 
     @Transactional
-    public void sendSystemNotification(User recipient, String text) {
+    public void sendSystemNotification(User recipient, String messageKey, Object[] args) {
+        Locale locale = Locale.forLanguageTag(recipient.getLocale());
+        String text = messageSource.getMessage(messageKey, args, locale);
+
         Notification notification = new Notification();
         notification.setUser(recipient);
         notification.setOrigin(NotificationOrigin.SYSTEM);
-        notification.setSenderUsername(null);
         notification.setText(text);
         notificationRepository.save(notification);
     }

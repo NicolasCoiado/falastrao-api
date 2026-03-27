@@ -1,5 +1,6 @@
 package br.com.falastrao.falastrao.controller;
 
+import br.com.falastrao.falastrao.dto.request.UpdateLocaleRequest;
 import br.com.falastrao.falastrao.dto.request.UserRequest;
 import br.com.falastrao.falastrao.dto.response.UserResponse;
 import br.com.falastrao.falastrao.model.User;
@@ -46,6 +47,13 @@ public class UserController {
                 "message", "Profile picture updated successfully",
                 "user", response
         ));
+    }
+
+    @PatchMapping("/locale")
+    public ResponseEntity<UserResponse> updateLocale(
+            @CurrentUser User user,
+            @Valid @RequestBody UpdateLocaleRequest request) {
+        return ResponseEntity.ok(service.updateLocale(user, request.locale()));
     }
 
 }
