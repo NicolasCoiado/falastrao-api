@@ -1,6 +1,8 @@
 package br.com.falastrao.falastrao.controller;
 
 import br.com.falastrao.falastrao.dto.request.PrivacyModerationRequest;
+import br.com.falastrao.falastrao.dto.response.InactiveUserResponse;
+import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
 import br.com.falastrao.falastrao.service.admin.AdminService;
 import jakarta.validation.Valid;
@@ -46,6 +48,13 @@ public class AdminController {
         boolean changed = service.demoteUser(userId);
         String message = changed ? "User demoted successfully" : "User is already a regular user";
         return ResponseEntity.ok(Map.of("message", message));
+    }
+
+    @GetMapping("/users/inactive")
+    public ResponseEntity<PageResponse<InactiveUserResponse>> getInactiveUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(service.getInactiveUsers(page, size));
     }
 
     @PatchMapping("/reviews/{externalId}/privacy")

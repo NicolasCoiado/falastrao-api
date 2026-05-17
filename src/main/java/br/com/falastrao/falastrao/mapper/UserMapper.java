@@ -1,6 +1,7 @@
 package br.com.falastrao.falastrao.mapper;
 
 import br.com.falastrao.falastrao.dto.request.UserRequest;
+import br.com.falastrao.falastrao.dto.response.InactiveUserResponse;
 import br.com.falastrao.falastrao.dto.response.UserResponse;
 import br.com.falastrao.falastrao.model.User;
 import org.mapstruct.Mapper;
@@ -15,4 +16,6 @@ public interface UserMapper {
 
     @Mapping(target = "externalId", source = "externalId")
     UserResponse toResponse(User user);
+
+    InactiveUserResponse toInactiveResponse(User user);
 }
