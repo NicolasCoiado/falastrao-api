@@ -4,13 +4,16 @@ import br.com.falastrao.falastrao.dto.request.ReviewRequest;
 import br.com.falastrao.falastrao.dto.request.UpdateReviewRequest;
 import br.com.falastrao.falastrao.dto.response.PageResponse;
 import br.com.falastrao.falastrao.dto.response.ReviewResponse;
+import br.com.falastrao.falastrao.exception.InvalidRequestException;
 import br.com.falastrao.falastrao.exception.ReviewNotFoundException;
+import br.com.falastrao.falastrao.exception.UserNotFoundException;
 import br.com.falastrao.falastrao.exception.UserWithoutPermissionException;
 import br.com.falastrao.falastrao.mapper.ReviewMapper;
 import br.com.falastrao.falastrao.model.Review;
 import br.com.falastrao.falastrao.model.Topic;
 import br.com.falastrao.falastrao.model.User;
 import br.com.falastrao.falastrao.repository.ReviewRepository;
+import br.com.falastrao.falastrao.repository.UserRepository;
 import br.com.falastrao.falastrao.service.topic.TopicService;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,16 +30,21 @@ import java.util.UUID;
 @Service
 public class ReviewService {
 
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of("publishedAt", "updatedAt", "title");
+
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
     private final TopicService topicService;
     private final ReviewMapper reviewMapper;
 
     public ReviewService(
             ReviewRepository reviewRepository,
+            UserRepository userRepository,
             TopicService topicService,
             ReviewMapper reviewMapper
     ) {
         this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
         this.topicService = topicService;
         this.reviewMapper = reviewMapper;
     }
@@ -72,6 +80,25 @@ public class ReviewService {
         Review review = reviewRepository.findByExternalIdAndPrivateReviewFalse(externalId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found"));
         return reviewMapper.toResponse(review);
+    }
+
+    public PageResponse<ReviewResponse> getUserReviews(UUID userExternalId, User requester, int page, int size, String sortBy, String direction) {
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidRequestException("Invalid sort field. Allowed values: " + ALLOWED_SORT_FIELDS);
+        }
+
+        User targetUser = userRepository.findByExternalId(userExternalId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        boolean isOwner = targetUser.getId().equals(requester.getId());
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        return PageResponse.from(
+                reviewRepository.findByUserExternalId(userExternalId, isOwner, PageRequest.of(page, size, sort))
+                        .map(reviewMapper::toResponse)
+        );
     }
 
     @Transactional
