@@ -81,6 +81,10 @@ public class TopicService {
         return savedTopics;
     }
 
+    public String normalizeSubject(String subject) {
+        return normalize(subject);
+    }
+
     private String normalize(String subject) {
 
         String normalized = Normalizer.normalize(subject, Normalizer.Form.NFD);
