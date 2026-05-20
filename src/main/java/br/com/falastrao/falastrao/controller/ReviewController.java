@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,7 +42,11 @@ public class ReviewController {
     @GetMapping
     public ResponseEntity<PageResponse<ReviewResponse>> getReviews(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<String> topics) {
+        if (topics != null && !topics.isEmpty()) {
+            return ResponseEntity.ok(service.getReviewsByTopics(topics, page, size));
+        }
         return ResponseEntity.ok(service.getReviews(page, size));
     }
 
