@@ -24,8 +24,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -72,6 +74,17 @@ public class ReviewService {
     public PageResponse<ReviewResponse> getReviews(int page, int size) {
         PageRequest pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
         Page<ReviewResponse> result = reviewRepository.findAllByPrivateReviewFalse(pageable)
+                .map(reviewMapper::toResponse);
+        return PageResponse.from(result);
+    }
+
+    public PageResponse<ReviewResponse> getReviewsByTopics(List<String> topics, int page, int size) {
+        Set<String> normalizedTopics = topics.stream()
+                .map(topicService::normalizeSubject)
+                .collect(Collectors.toSet());
+
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("publishedAt").descending());
+        Page<ReviewResponse> result = reviewRepository.findAllByTopicsIn(normalizedTopics, pageable)
                 .map(reviewMapper::toResponse);
         return PageResponse.from(result);
     }
